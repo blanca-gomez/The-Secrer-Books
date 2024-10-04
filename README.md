@@ -28,8 +28,11 @@ For the dabatase the project needs to include minimum a way create the tables yo
 
 #### Good practices
 1. Make small commits that allow to follow the code easily and rollback if needed.
-   For example -
+   
+   For example.
+   
    Add Book model (1 commit)
+   
    Adds book creation endpoint (1 commit)
 
 ### Nice to have.
