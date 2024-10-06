@@ -1,0 +1,19 @@
+{
+  "name": "the-secret-books",
+  "version": "1.0.0",
+  "description": "Backend project for a book store where you can buy or download books.",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0",
+    "pg": "^8.13.0"
+  }
+}
