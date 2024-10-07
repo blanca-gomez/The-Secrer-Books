@@ -39,19 +39,29 @@ router.post('/', async (req,res) => {
 router.delete('/:id', async (req,res) => {
     try{
         const {id} = req.params;
-        const {rows, rowCount} = await pool.query("DELETE FROM books WHERE id = $1 RETURNING *", [id]);
+        const {rowCount} = await pool.query("DELETE FROM books WHERE id = $1 RETURNING *", [id]);
         if(rowCount === 0 ){
             return res.status(404).json({message:"Book not found"})
         }
-        return res.json(rows)
+        return res.send.status(204);
     }
     catch(error){
         console.error('Error deleting book', error);
     }
 });
 
-router.put('/:id', (req,res) => {
-    res.send('Actualizando libros')
+router.put('/:id', async(req,res) => {
+    try{
+        const {id} = req.params;
+        const data = req.body
+        const {rows} = await pool.query('UPDATE books SET ISBN=$1, Name=$2, Author=$3, link=$4 WHERE id=$5 RETURNING *', 
+        [data.isbn, data.name, data.author,data.link, id]
+        );
+        return res.json(rows[0]);
+
+    }catch(error){
+        console.error('Error updating book', error);
+    }
 });
 
 
