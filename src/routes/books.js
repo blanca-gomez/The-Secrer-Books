@@ -23,11 +23,17 @@ router.get('/:id', async(req,res) => {
     }catch(error){
         console.error('Error getting book', error); 
     }
-    
 });
 
-router.post('/', (req,res) => {
-    res.send('Creando libro')
+router.post('/', async (req,res) => {
+    try{
+        const data = req.body;
+        const {rows} = await pool.query("INSERT INTO books (ISBN, Name, Author, link) VALUES ($1,$2,$3,$4) RETURNING *",
+        [data.isbn, data.name, data.author, data.link]);
+        return res.json(rows[0])
+    }catch(error){
+        console.error('Error adding book', error)
+    }
 });
 
 router.delete('/:id', async (req,res) => {
