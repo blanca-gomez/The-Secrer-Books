@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const pool= require('../db');
 
-router.get('/', (req,res) => {
-    res.send('Obteniendo libros')
+router.get('/', async(req,res) => {
+    const {rows} = await pool.query("SELECT * FROM books");
+    res.json(rows);
 });
 
-router.get('/:id', (req,res) => {
-    const {id} = req.params
-    res.send('Obteniendo el libro' + id)
+router.get('/:id', async(req,res) => {
+    const {id} = req.params;
+    const {rows} = await pool.query("SELECT * FROM books WHERE id = $1", [id])
+    res.json(rows)
 });
 
 router.post('/', (req,res) => {
