@@ -10,3 +10,5 @@ app.use('/books', booksRoutes);
 
 app.listen(PORT);
 console.log('Server is listen on port', PORT);
+
+module.exports= app;
