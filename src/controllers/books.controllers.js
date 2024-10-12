@@ -1,4 +1,6 @@
 const pool= require('../db');
+const fs = require('fs');
+const csv = require('csv');
 
 const getAllBooks = async(req,res) => {
     try{
@@ -62,4 +64,37 @@ const updateBook = async(req,res) => {
     }
 };
 
-module.exports= {getAllBooks, getById, addNewBook, deleteBook, updateBook};
+
+const importBooksFromCsv = async(req,res) =>{
+    const result = [];
+
+    fs.createReadStream('./example/books.csv')
+        .pipe(csv.parse({trim: true, skip_empty_lines: true, columns: true}))
+        .on('data', (row) => {
+            result.push({
+                ISBN: row.ISBN,
+                name: row.name,
+                author: row.author,
+                link: row.link
+            })
+        })
+        .on('end', async() => {
+            try{
+                const query = 'INSERT INTO books (ISBN, Name, Author, link) VALUES ($1,$2,$3,$4)';
+
+                for(const book of result){
+                    if(book.ISBN && book.name && book.author && book.link){
+                        await pool.query(query, [book.ISBN, book.name, book.author, book.link]);
+                    }  
+                };
+
+                res.json({message: 'Books successfully imported'});
+
+            }catch(error){
+                console.error('Error importing books', error);
+                res.status(500).json({message:'Server error'});
+            };
+        });
+};
+
+module.exports= {getAllBooks, getById, addNewBook, deleteBook, updateBook, importBooksFromCsv};
