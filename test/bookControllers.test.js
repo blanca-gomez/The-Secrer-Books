@@ -48,3 +48,28 @@ describe('POST /books', () => {
         expect(book).toHaveProperty('link', testBook.link);
     });
 });
+
+describe('DELETE /books/:id', () => {
+    let bookId;
+    beforeAll(async () => {
+        const testBook = {
+            "isbn": "1111111111",
+            "name": "Book test",
+            "author": "Jest",
+            "link": "https://www.BookTest.es"
+        };
+        const response = await request(app).post('/books').send(testBook);
+        bookId = response.body.id; 
+    });
+
+    test('Should delete the book with the specified ID', async () => {
+        const response = await request(app).delete(`/books/${bookId}`);
+        expect(response.statusCode).toBe(204);
+    });
+
+    test('Should confirm the book was deleted', async () => {
+        const response = await request(app).get(`/books/${bookId}`);
+        expect(response.statusCode).toBe(404); 
+        expect(response.body).toHaveProperty('message', 'Book not found');
+    });
+});
